@@ -1,6 +1,9 @@
 var sys = require('sys');
 var http = require('http');
+var querystring = require('querystring');
 var jerk = require('./lib/Jerk/lib/jerk');
+
+var valhalla_host = 'valhalla.robotrockstar.com'
 
 var options =
 { server: 'irc.freenode.net',
@@ -15,6 +18,15 @@ jerk(function(j) {
 
   j.watch_for(/^(.+) are silly$/, function(message) {
     message.say(message.user + ': ' + message.match_data[1] + ' are NOT SILLY.');
+  });
+
+  j.watch_for('',function(message) {
+    // TODO should whitelist names. didn't bother to look how this is done in old fish_fry
+    var deeds = http.createClient(80, valhalla_host);
+    var request = deeds.request('POST', '/deeds.json', {'host': valhalla_host});
+    var body = querystring.stringify({'deed': {'speaker': message.user, 'performed_at': (new Date()).toString(), 'text': message.text.join(' ')}});
+    request.write(body);
+    request.end();
   });
 
   var urlRegex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/g;
