@@ -2,20 +2,17 @@ var sys = require('sys');
 var http = require('http');
 var querystring = require('querystring');
 var jerk = require('./lib/Jerk/lib/jerk');
-
-var valhalla_host = 'valhalla.robotrockstar.com'
-
-var options =
-{ server: 'irc.freenode.net',
-  nick: 'new_fish',
-  channels: ['#rinacrew.en']
-};
+try {
+  var settings = require('./local_settings');
+} catch (no_settings) {
+  throw new Error('See the README and define local_settings.js');
+}
 
 jerk(function(j) {
   j.watch_for('',function(message) {
     // TODO should whitelist names. didn't bother to look how this is done in old fish_fry
-    var deeds = http.createClient(80, valhalla_host);
-    var request = deeds.request('POST', '/deeds.json', {'host': valhalla_host});
+    var deeds = http.createClient(80, settings.valhalla_options.host);
+    var request = deeds.request('POST', '/deeds.json', {'host': settings.valhalla_options.host});
     var body = querystring.stringify({'deed': {'speaker': message.user, 'performed_at': (new Date()).toString(), 'text': message.text.join(' ')}});
     request.write(body);
     request.end();
@@ -47,4 +44,4 @@ jerk(function(j) {
   });
  
 
-}).connect(options);
+}).connect(settings.irc_options);
