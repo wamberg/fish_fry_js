@@ -12,14 +12,6 @@ var options =
 };
 
 jerk(function(j) {
-  j.watch_for('soup', function(message) {
-    message.say(message.user + ': soup is good food!');
-  });
-
-  j.watch_for(/^(.+) are silly$/, function(message) {
-    message.say(message.user + ': ' + message.match_data[1] + ' are NOT SILLY.');
-  });
-
   j.watch_for('',function(message) {
     // TODO should whitelist names. didn't bother to look how this is done in old fish_fry
     var deeds = http.createClient(80, valhalla_host);
