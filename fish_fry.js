@@ -2,8 +2,12 @@ var sys = require('sys');
 var http = require('http');
 var querystring = require('querystring');
 var jerk = require('./lib/Jerk/lib/jerk');
+var base64 = require('./lib/base64');
 
 var valhalla_host = 'valhalla.robotrockstar.com'
+var valhalla_port = 80;
+var http_auth = null;
+//var http_basic_auth = ['user', 'password'];
 
 var options =
 { server: 'irc.freenode.net',
@@ -22,8 +26,12 @@ jerk(function(j) {
 
   j.watch_for('',function(message) {
     // TODO should whitelist names. didn't bother to look how this is done in old fish_fry
-    var deeds = http.createClient(80, valhalla_host);
-    var request = deeds.request('POST', '/deeds.json', {'host': valhalla_host});
+    var deeds = http.createClient(valhalla_port, valhalla_host);
+    var headers = {'host': valhalla_host};
+    if(http_basic_auth){
+      headers['Authorization'] = 'Basic ' + base64.encode(http_basic_auth[0] + ':' + http_basic_auth[1]);
+    }
+    var request = deeds.request('POST', '/deeds.json', headers);
     var body = querystring.stringify({'deed': {'speaker': message.user, 'performed_at': (new Date()).toString(), 'text': message.text.join(' ')}});
     request.write(body);
     request.end();
