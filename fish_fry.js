@@ -2,6 +2,7 @@ var sys = require('sys');
 var http = require('http');
 var querystring = require('querystring');
 var jerk = require('./lib/Jerk/lib/jerk');
+var base64 = require('./lib/base64');
 try {
   var settings = require('./local_settings');
 } catch (no_settings) {
@@ -12,8 +13,15 @@ jerk(function(j) {
   j.watch_for('',function(message) {
     // TODO should whitelist names. didn't bother to look how this is done in old fish_fry
     var deeds = http.createClient(80, settings.valhalla_options.host);
-    var request = deeds.request('POST', '/deeds.json', {'host': settings.valhalla_options.host});
+    var headers = {'host': settings.valhalla_options.host};
+    if(settings.valhalla_options.http_basic_auth){
+      headers['Authorization'] = 'Basic ' 
+        + base64.encode(settings.valhalla_options.user + ':' 
+        + settings.valhalla_options.pass);
+    }
     var body = querystring.stringify({'deed': {'speaker': message.user, 'performed_at': (new Date()).toString(), 'text': message.text.join(' ')}});
+    headers['Content-Length'] = body.length;
+    var request = deeds.request('POST', '/deeds.json', headers);
     request.write(body);
     request.end();
   });

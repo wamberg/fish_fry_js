@@ -17,5 +17,8 @@ All configuration is done in a file outside of the git repository.  Your file sh
     };
 
     settings.valhalla_options = {
-      host: 'your-site.domain'
+      host: 'your-site.domain',
+      user: '<basic auth username>',
+      pass: '<basic auth password>',
+
     };
