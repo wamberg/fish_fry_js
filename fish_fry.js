@@ -59,3 +59,28 @@ client.addListener('message', function(from, to, message) {
     request.end();
   }
 });
+
+if (settings.twitter_options) {
+  var OAuth= require('./node-oauth/lib/oauth').OAuth;
+
+  var oa= new OAuth(settings.twitter_options.request_token_url,
+      settings.twitter_options.access_token_url,
+      settings.twitter_options.consumer_key,
+      settings.twitter_options.consumer_secret,
+      "1.0a",
+      null,
+      "HMAC-SHA1");
+
+  client.addListener('message', function(from, to, message) {
+    var twitter_match = message.match("^twitter:\(.*\)");
+    if (twitter_match) {
+      oa.post(settings.twitter_options.status_update_url,
+          settings.twitter_options.access_key, 
+          settings.twitter_options.access_secret,
+          {"status": twitter_match[1].replace(/^[\s\xA0]+/, "").replace(/[\s\xA0]+$/, "")},
+          function(error, data) {
+            if(error) console.log(require('sys').inspect(error))
+          });
+    }
+  });
+}

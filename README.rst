@@ -22,3 +22,13 @@ All configuration is done in a file outside of the git repository.  Your file sh
       pass: '<basic auth password>',
 
     };
+
+settings.twitter_options = {
+  consumer_key: '<dev.twitter.com creds>',
+  consumer_secret: '<dev.twitter.com creds>',
+  access_key: '<dev.twitter.com creds>',
+  access_secret: '<dev.twitter.com creds>',
+  request_token_url: 'https://api.twitter.com/oauth/request_token',
+  access_token_url: 'https://api.twitter.com/oauth/access_token',
+  status_update_url: 'http://api.twitter.com/1/statuses/update.json'
+};
