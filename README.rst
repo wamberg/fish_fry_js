@@ -32,3 +32,20 @@ settings.twitter_options = {
   access_token_url: 'https://api.twitter.com/oauth/access_token',
   status_update_url: 'http://api.twitter.com/1/statuses/update.json'
 };
+
+Features
+--------
+
+* Posts deeds to valhalla server
+* Posts messages that start with 'twitter:' to Twitter
+* In-chat programmable responses for example:
+  * respond: .* weather .*^^http://www.spaceneedle.com/view/webcam.html
+
+To-do:
+------
+
+* Event countdown
+  * event_set: <name> <time>
+    * sets an event
+  * event: <name> 
+    * reports on event <name>
