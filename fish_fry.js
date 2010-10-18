@@ -132,6 +132,34 @@ client.addListener('message', function(from, to, message) {
   }
 });
 
+// list responses
+client.addListener('pm', function(from, message) {
+  var respond_list_match = message.match("^respond_list");
+  if (respond_list_match) {
+    client.say(from, "Here are the responses I'm programmed to identify:");
+    for (var i = 0; i < responses.length; i++) {
+      client.say(from, "  " + i + ". " + JSON.stringify(responses[i]));
+    }
+  }
+});
+
+// delete reponse
+client.addListener('pm', function(from, message) {
+  var respond_delete_match = message.match("^respond_delete:\s*\([0-9]*\)");
+  if (respond_delete_match) {
+    var delete_index = respond_delete_match[1];
+    if (delete_index < responses.length) {
+      responses.splice(delete_index, 1);
+      fs.writeFile('./responses.json', JSON.stringify(responses));
+      client.say(from, "This contract is sealed.");
+    } else {
+      client.say(from, "Can't delete response " + delete_index);
+      client.say(from, "Run 'respond_list' and try again.");
+    }
+  }
+});
+
+// respond to messages that match our regexes
 client.addListener('message', function(from, to, message) {
     for (var i = 0; i < responses.length; i++) {
       if (message.match(responses[i][0])) {
