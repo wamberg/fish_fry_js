@@ -113,7 +113,6 @@ path.exists('./responses.json', function(exists) {
       fs.readFile('./responses.json', function(err, data) {
         if (err) throw err;
         responses = Script.runInNewContext(data);
-        console.log(sys.inspect(responses));
       });
     }
 });
@@ -145,7 +144,7 @@ client.addListener('pm', function(from, message) {
 
 // delete reponse
 client.addListener('pm', function(from, message) {
-  var respond_delete_match = message.match("^respond_delete:\s*\([0-9]*\)");
+  var respond_delete_match = message.match(/^respond_delete:\s*(\d*)/);
   if (respond_delete_match) {
     var delete_index = respond_delete_match[1];
     if (delete_index < responses.length) {
